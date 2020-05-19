@@ -1,35 +1,49 @@
 import React, { Component } from 'react';
 import Menu from './MenuComponent';
-import {DISHES} from '../shared/dishes';
-import DishDetail from './DishDetailComponent';
-import { View } from 'react-native';
+import {DishDetail} from './DishDetailComponent';
+import Home from './HomeComponent';
+import {createStackNavigator } from '@react-navigation/stack';
+import {NavigationContainer } from '@react-navigation/native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
-class Main extends Component {
 
-   constructor(props){
-      super(props);
-      this.state = {
-         dishes : DISHES,
-         selectedDish: null
-      }
-   }
+const MenuNavigator = createStackNavigator();
 
-   onDishSelect(dishId){
-      this.setState({selectedDish: dishId});
-   }
+const MainNavigator = createDrawerNavigator();
 
-   render(){
-      return(
-
-         <View>
-            <Menu dishes={this.state.dishes} 
-               onPress={ (dishId) => this.onDishSelect(dishId)} />
-
-            <DishDetail dish={this.state.dishes.filter( (dish) => dish.id === this.state.selectedDish)[0] } />
-         </View>
-      );         
-   }
+const HomeNavigator = createStackNavigator();
    
+function MenuStack(){
+   return (
+      <MenuNavigator.Navigator initialRouteName="Menu">
+        <MenuNavigator.Screen name="Menu" component={Menu} options={{title: "Menu"}} />
+        <MenuNavigator.Screen name="DishDetail" component={DishDetail} options={{title : "DishDetail"}}/> 
+      </MenuNavigator.Navigator>
+    );
 }
 
-export default Main;
+function HomeStack(){
+   return(
+      <HomeNavigator.Navigator>
+         <HomeNavigator.Screen name="Home" component={Home}/>
+      </HomeNavigator.Navigator>
+   );
+}
+
+function MainDrawer(){
+   return(
+      <MainNavigator.Navigator>
+         <MainNavigator.Screen name="Home" component={HomeStack}/>
+         <MainNavigator.Screen name="Menu" component={MenuStack}/>
+      </MainNavigator.Navigator>
+   );
+}
+
+
+export default function Main(){
+   return(
+      <NavigationContainer>
+         <MainDrawer/>
+      </NavigationContainer>
+   )
+}
