@@ -3,13 +3,19 @@ import { View, Text, ScrollView, FlatList } from 'react-native';
 import { Card, Icon } from 'react-native-elements';
 import { connect} from 'react-redux';
 import { baseUrl} from '../shared/baseUrl';
+import { postFavourite } from '../redux/ActionCreators';
 
 const mapStateToProps = state => {
    return{
       dishes: state.dishes,
-      comments: state.comments
+      comments: state.comments,
+      favourites: state.favourites
    }
 }
+
+const mapDispatchToProps = dispatch => ({
+   postFavourite: (dishId) => dispatch(postFavourite(dishId))
+});
 
 function RenderDish(props){
    const dish = props.dish;
@@ -68,15 +74,8 @@ function RenderComments(props){
 
 class NewDishDetail extends Component{
 
-   constructor(props){
-      super(props);
-      this.state = {
-         favourites: []
-      };
-   }
-
    markfavourite(dishId){
-      this.setState({ favourites : this.state.favourites.concat(dishId)});
+      this.props.postFavourite(dishId);
    }
 
    static navigationOptions = {
@@ -90,7 +89,7 @@ class NewDishDetail extends Component{
       return(
          <ScrollView>
             <RenderDish dish={this.props.dishes.dishes[+dishId]} 
-               favourite = {this.state.favourites.some( el => el === dishId)}      
+               favourite = {this.props.favourites.some( el => el === dishId)}      
                onPress={() => this.markfavourite(dishId)}
             />
             <RenderComments 
@@ -102,4 +101,4 @@ class NewDishDetail extends Component{
 
 }
 
-export default connect(mapStateToProps)(NewDishDetail);
+export default connect(mapStateToProps, mapDispatchToProps)(NewDishDetail);
