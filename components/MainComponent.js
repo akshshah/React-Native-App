@@ -3,6 +3,8 @@ import Menu from './MenuComponent';
 import { View, Image, StyleSheet,Text} from 'react-native';
 import  NewDishDetail from './NewDishComponent';
 import Home from './HomeComponent';
+import Reservation from './ReservationComponent';
+import FavouritesComponent from './FavouritesComponent';
 import {createStackNavigator } from '@react-navigation/stack';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import { createDrawerNavigator, DrawerItemList, DrawerContentScrollView} from '@react-navigation/drawer';
@@ -11,6 +13,7 @@ import  AboutUs  from './AboutUs';
 import { Icon } from 'react-native-elements';
 import { connect} from 'react-redux';
 import {fetchDishes, fetchComments, fetchPromos, fetchLeaders} from '../redux/ActionCreators';
+
 
 const mapStateToProps = state => {
    return{
@@ -29,6 +32,8 @@ const MainNavigator = createDrawerNavigator();
 const HomeNavigator = createStackNavigator();
 const AboutUsNavigator = createStackNavigator();
 const ContactUsNavigator = createStackNavigator();
+const ReservationNavigator = createStackNavigator();
+const FavouriteNavigator = createStackNavigator();
 
 const HeaderLeft = () => {
    const navigation = useNavigation();
@@ -129,6 +134,40 @@ function ContactStack(){
    );
 }
 
+function ReserveStack(){
+   return(
+      <ReservationNavigator.Navigator
+         screenOptions={{
+            headerStyle : {backgroundColor: '#512DA8'},
+            headerTintColor: '#fff',
+            headerTitleStyle:{color: '#fff'}
+         }} >
+         <HomeNavigator.Screen name="Reserve Table" component={Reservation} 
+            options={{ 
+               headerLeft: ({}) => <HeaderLeft/>
+            }}
+         /> 
+      </ReservationNavigator.Navigator>
+   );
+}
+
+function FavouriteStack(){
+   return(
+      <FavouriteNavigator.Navigator
+         screenOptions={{
+            headerStyle : {backgroundColor: '#512DA8'},
+            headerTintColor: '#fff',
+            headerTitleStyle:{color: '#fff'}
+         }} >
+         <HomeNavigator.Screen name="My Favourites" component={FavouritesComponent} 
+            options={{ 
+               headerLeft: ({}) => <HeaderLeft/>
+            }}
+         /> 
+      </FavouriteNavigator.Navigator>
+   );
+}
+
 function MainDrawer(){
    return(
       <MainNavigator.Navigator drawerStyle={{backgroundColor:'#D1C4E9'}} 
@@ -144,6 +183,20 @@ function MainDrawer(){
             options={{drawerLabel: 'Menu',
                drawerIcon: ({ tintColor }) => (
                   <Icon name='list' type='font-awesome' size={22} color={tintColor}/>
+               )
+            }}
+         />
+         <MainNavigator.Screen name="My Favourites" component={FavouriteStack} 
+            options={{drawerLabel: 'My Favourites',
+               drawerIcon: ({ tintColor }) => (
+                  <Icon name='heart' type='font-awesome' size={22} color={tintColor}/>
+               )
+            }}
+         />
+         <MainNavigator.Screen name="Reserve Table" component={ReserveStack} 
+            options={{drawerLabel: 'Reserve Table',
+               drawerIcon: ({ tintColor }) => (
+                  <Icon name='cutlery' type='font-awesome' size={22} color={tintColor}/>
                )
             }}
          />

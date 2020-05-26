@@ -23,6 +23,30 @@ export const fetchComments = () => (dispatch) => {
 
 }
 
+export const postComment = (dishId,rating,author,comment) => (dispatch) => {
+
+   var dateTime = new Date().toDateString()+", "+new Date().toTimeString();
+   //console.log(dishId, rating, author, comment);
+   const newComment = {
+      id: null,
+      author: author,
+      comment: comment,
+      dishId: dishId,
+      rating: rating,
+      date: dateTime,
+   }
+   //console.log(newComment);
+
+   setTimeout(() => {
+      dispatch(addComment(newComment));
+   },1000);
+}
+
+export const addComment = (comment) => ({
+   type: ActionTypes.ADD_COMMENT,
+   payload: comment 
+});
+
 export const commentsFailed = (errMsg) => ({
    type: ActionTypes.COMMENTS_FAILED,
    payload : errMsg
@@ -161,4 +185,10 @@ export const postFavourite = (dishId) => (dispatch) => {
 export const addFavourite = (dishId) => ({
    type: ActionTypes.ADD_FAVOURITE,
    payload: dishId 
+});
+
+
+export const deleteFavourite = (dishId) => ({
+   type: ActionTypes.DELETE_FAVOURITE,
+   payload: dishId
 });
