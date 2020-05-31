@@ -5,6 +5,7 @@ import  NewDishDetail from './NewDishComponent';
 import Home from './HomeComponent';
 import Reservation from './ReservationComponent';
 import FavouritesComponent from './FavouritesComponent';
+import LoginComponent from './LoginComponent';
 import {createStackNavigator } from '@react-navigation/stack';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import { createDrawerNavigator, DrawerItemList, DrawerContentScrollView} from '@react-navigation/drawer';
@@ -34,6 +35,8 @@ const AboutUsNavigator = createStackNavigator();
 const ContactUsNavigator = createStackNavigator();
 const ReservationNavigator = createStackNavigator();
 const FavouriteNavigator = createStackNavigator();
+const LoginNavigator = createStackNavigator();
+
 
 const HeaderLeft = () => {
    const navigation = useNavigation();
@@ -168,10 +171,36 @@ function FavouriteStack(){
    );
 }
 
+function LoginStack(){
+   return(
+      <LoginNavigator.Navigator
+         screenOptions={{
+            headerStyle : {backgroundColor: '#512DA8'},
+            headerTintColor: '#fff',
+            headerTitleStyle:{color: '#fff'}
+         }} >
+         <HomeNavigator.Screen name="Login" component={LoginComponent} 
+            options={{ 
+               headerLeft: ({}) => <HeaderLeft/>
+            }}
+         /> 
+      </LoginNavigator.Navigator>
+   );
+}
+
 function MainDrawer(){
    return(
       <MainNavigator.Navigator drawerStyle={{backgroundColor:'#D1C4E9'}} 
+         initialRouteName='Home'
          drawerContent={props => <CustomDrawerContentComponent{...props}/> } >
+
+         <MainNavigator.Screen name="Login" component={LoginStack}
+            options={{drawerLabel: 'Login',
+               drawerIcon: ({ tintColor }) => (
+                  <Icon name='sign-in' type='font-awesome' size={22} color={tintColor}/>
+               )
+            }}
+         />  
          <MainNavigator.Screen name="Home" component={HomeStack} 
             options={{drawerLabel: 'Home',
                drawerIcon: ({ tintColor }) => (
