@@ -4,6 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Animatable from 'react-native-animatable';
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions'; 
+import * as Calendar from 'expo-calendar';
 
 
 class Reservation extends Component {
@@ -47,6 +48,7 @@ class Reservation extends Component {
                text: 'Yes',
                onPress: () => {
                   this.presentLocalNotification(this.state.date);
+                  this.addReservationToCalender(this.state.date);
                   this.resetForm();
                }
             }
@@ -92,6 +94,42 @@ class Reservation extends Component {
             vibrate: true
          }
       });
+   }
+
+   async obtainCalendarPermission(){
+      let calendarPermission = await Permissions.getAsync(Permissions.CALENDAR)
+      if(calendarPermission.status !== 'granted'){
+         calendarPermission = await Permissions.askAsync(Permissions.CALENDAR);
+         if(calendarPermission.status !== 'granted'){
+            Alert.alert("Permission not granted to use calendar")
+         }
+      }
+      return calendarPermission;
+   }
+
+   async getDefaultCalendarId() {
+      const calendars = await Calendar.getCalendarsAsync();
+      return calendars[0].id;
+   }
+
+   async addReservationToCalender(date){
+      await this.obtainCalendarPermission();
+      const calendars = await Calendar.getCalendarsAsync();
+      // console.log('Here are all your calendars:');
+      // console.log({ calendars });
+
+      const defaultCalendarId = await this.getDefaultCalendarId();
+
+      console.log(defaultCalendarId);
+      
+      Calendar.createEventAsync(defaultCalendarId,
+         {
+            title:'Con Fusion Table Reservation',
+            startDate: new Date(Date.parse(date)),
+            endDate: new Date(Date.parse(date) + (2*60*60*1000)),
+            timeZone: 'Asia/Hong_Kong',
+            location: '121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong'
+         });
    }
 
    render() {
